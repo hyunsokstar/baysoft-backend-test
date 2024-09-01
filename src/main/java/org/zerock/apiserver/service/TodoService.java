@@ -6,6 +6,12 @@ import org.zerock.apiserver.dto.TodoDTO;
 public interface TodoService {
     TodoDTO get(long tno);
 
+    Long register(TodoDTO dto);
+
+    void modify(TodoDTO dto);
+
+    void remove(Long tno);
+
     default TodoDTO entityToDto(Todo todo) {
         TodoDTO todoDto =
                 TodoDTO.builder()

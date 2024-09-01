@@ -21,4 +21,25 @@ public class TodoServiceImpl implements TodoService{
         Todo todo = result.orElseThrow();
         return entityToDto(todo);
     }
+
+    @Override
+    public Long register(TodoDTO dto) {
+
+        Todo todo = dtoToEntity(dto);
+
+        Todo result = todoRepository.save(todo);
+
+        return result.getTno();
+    }
+
+
+    @Override
+    public void modify(TodoDTO dto) {
+
+    }
+
+    @Override
+    public void remove(Long tno) {
+
+    }
 }
