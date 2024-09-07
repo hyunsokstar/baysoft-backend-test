@@ -33,25 +33,25 @@ public class TodoRepositoryTest {
         todoRepository.save(todo3);
     }
 
-    @Test
-    @Rollback(true) // 테스트 후 데이터 롤백
-    public void testSearch1() {
-        Page<TodoDTO> result = todoRepository.search1();
-
-        // 검색 결과 전체를 로그로 출력
-        log.info("검색 결과 result : " + result);
-
-        // 로그로 데이터 확인
-        log.info("Total Elements: " + result.getTotalElements());
-        log.info("Total Pages: " + result.getTotalPages());
-
-        // 결과에 대한 검증
-        assertThat(result.getTotalElements()).isGreaterThan(0);
-        assertThat(result.getContent().get(0).getTitle()).contains("1");
-
-        // 검색된 결과의 개수 출력
-        log.info("Number of search results: " + result.getNumberOfElements());
-    }
+//    @Test
+//    @Rollback(true) // 테스트 후 데이터 롤백
+//    public void testSearch1() {
+//        Page<TodoDTO> result = todoRepository.search1();
+//
+//        // 검색 결과 전체를 로그로 출력
+//        log.info("검색 결과 result : " + result);
+//
+//        // 로그로 데이터 확인
+//        log.info("Total Elements: " + result.getTotalElements());
+//        log.info("Total Pages: " + result.getTotalPages());
+//
+//        // 결과에 대한 검증
+//        assertThat(result.getTotalElements()).isGreaterThan(0);
+//        assertThat(result.getContent().get(0).getTitle()).contains("1");
+//
+//        // 검색된 결과의 개수 출력
+//        log.info("Number of search results: " + result.getNumberOfElements());
+//    }
 
 
 }

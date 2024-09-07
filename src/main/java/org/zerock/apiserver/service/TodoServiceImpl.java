@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.zerock.apiserver.domain.Todo;
+import org.zerock.apiserver.dto.PageRequestDTO;
+import org.zerock.apiserver.dto.PageResponseDTO;
 import org.zerock.apiserver.dto.TodoDTO;
 import org.zerock.apiserver.repository.TodoRepository;
 
@@ -35,11 +37,28 @@ public class TodoServiceImpl implements TodoService{
 
     @Override
     public void modify(TodoDTO dto) {
+        Optional<Todo> result = todoRepository.findById(dto.getTno());
 
+        Todo todo = result.orElseThrow();
+
+        todo.changeTitle(dto.getTitle());
+        todo.changeContent(dto.getContent());
+        todo.changeComplete(dto.isComplete());
+        todo.changeDueDate(dto.getDueDate());
+
+        todoRepository.save(todo);
     }
 
     @Override
     public void remove(Long tno) {
-
+        //  Optional<Todo> result = todoRepository.findById()
+        todoRepository.deleteById(tno);
     }
+
+    @Override
+    public PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO) {
+        return null;
+    }
+
+
 }
