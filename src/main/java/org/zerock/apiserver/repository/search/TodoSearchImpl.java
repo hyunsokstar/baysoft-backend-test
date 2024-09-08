@@ -6,6 +6,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.zerock.apiserver.domain.QTodo;
 import org.zerock.apiserver.domain.Todo;
+import org.zerock.apiserver.dto.PageRequestDTO;
 import org.zerock.apiserver.dto.TodoDTO;
 
 import java.util.List;
@@ -18,9 +19,10 @@ public class TodoSearchImpl extends QuerydslRepositorySupport implements TodoSea
         super(Todo.class);  // 엔티티 클래스를 명시적으로 전달
     }
 
-    @Override
-    public Page<TodoDTO> search1() {  // 반환 타입을 Page<TodoDTO>로 변경
 
+    //  pageRequestDto 는 검색과 관련된 정보를 모두 가지고 있음
+    @Override
+    public Page<Todo> search1(PageRequestDTO pageRequestDTO) {
         log.info("search1...........");
         QTodo todo = QTodo.todo;
 
@@ -29,20 +31,17 @@ public class TodoSearchImpl extends QuerydslRepositorySupport implements TodoSea
         // 조건 추가
         query.where(todo.title.contains("1"));
 
-        Pageable pageable = PageRequest.of(1, 10, Sort.by("tno").descending());
+        Pageable pageable = PageRequest.of(
+                pageRequestDTO.getPage() - 1,
+                pageRequestDTO.getSize(),
+                Sort.by("tno").descending());
 
         this.getQuerydsl().applyPagination(pageable, query);
 
         // 데이터 조회 및 페이징 결과 반환
-        List<Todo> result = query.fetch();
-        long count = query.fetchCount();
+        List<Todo> list = query.fetch();
+        long total = query.fetchCount();
 
-        // Todo -> TodoDTO 변환
-        List<TodoDTO> dtoList = result.stream()
-                .map(entity -> new TodoDTO(entity.getTno(), entity.getTitle(), entity.getContent()))
-                .collect(Collectors.toList());
-
-        // PageImpl<TodoDTO>를 반환
-        return new PageImpl<>(dtoList, pageable, count);
+        return new PageImpl<>(list, pageable, total);
     }
 }
