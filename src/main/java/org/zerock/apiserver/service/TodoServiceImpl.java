@@ -1,5 +1,6 @@
 package org.zerock.apiserver.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,8 @@ import java.util.stream.Collectors;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class TodoServiceImpl implements TodoService{
+@Transactional
+public class TodoServiceImpl implements TodoService {
     private final TodoRepository todoRepository;
 
     @Override
@@ -29,19 +31,22 @@ public class TodoServiceImpl implements TodoService{
 
     @Override
     public Long register(TodoDTO dto) {
-
-        Todo todo = dtoToEntity(dto);
-
-        Todo result = todoRepository.save(todo);
-
-        return result.getTno();
+        try {
+            System.out.println("없어서 저장2");
+            System.out.println("없어서 저장 data : " + dto);
+            Todo todo = dtoToEntity(dto);
+            Todo result = todoRepository.save(todo);
+            log.info("result : ", result.getTno());
+            return result.getTno();
+        } catch (Exception e) {
+            log.error("Error saving Todo: ", e);
+            throw e;
+        }
     }
-
 
     @Override
     public void modify(TodoDTO dto) {
         Optional<Todo> result = todoRepository.findById(dto.getTno());
-
         Todo todo = result.orElseThrow();
 
         todo.changeTitle(dto.getTitle());
@@ -54,25 +59,41 @@ public class TodoServiceImpl implements TodoService{
 
     @Override
     public void remove(Long tno) {
-        //  Optional<Todo> result = todoRepository.findById()
         todoRepository.deleteById(tno);
     }
 
     @Override
-    public PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO) {
-        //JPA
-        Page<Todo> result = todoRepository.search1(pageRequestDTO);
-        List<TodoDTO> dtoList = result.get().map(todo -> entityToDto(todo)).collect(Collectors.toList());
-
-        PageResponseDTO<TodoDTO> responseDTO =
-                PageResponseDTO.<TodoDTO>withAll()
-                        .dtoList(dtoList)
-                        .pageRequestDTO(pageRequestDTO)
-                        .total(result.getTotalElements())
-                        .build();
-
-        return responseDTO;
+    public void removeTodos(List<Long> tnoList) {
+        for (Long tno : tnoList) {
+            if (todoRepository.existsById(tno)) {
+                todoRepository.deleteById(tno);
+            } else {
+                log.warn("삭제하려는 Todo가 존재하지 않습니다: TNO = " + tno);
+            }
+        }
     }
 
+    @Override
+    public void registerTodos(List<TodoDTO> todoDTOList) {
+        for (TodoDTO dto : todoDTOList) {
+            if (dto.getTno() != null && todoRepository.existsById(dto.getTno())) {
+                modify(dto);  // 이미 존재하는 경우 업데이트
+            } else {
+                System.out.println("없어서 저장 1");
+                register(dto);  // 없는 경우 새로 저장
+            }
+        }
+    }
 
+    @Override
+    public PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO) {
+        Page<Todo> result = todoRepository.search1(pageRequestDTO);
+        List<TodoDTO> dtoList = result.get().map(this::entityToDto).collect(Collectors.toList());
+
+        return PageResponseDTO.<TodoDTO>withAll()
+                .dtoList(dtoList)
+                .pageRequestDTO(pageRequestDTO)
+                .total(result.getTotalElements())
+                .build();
+    }
 }

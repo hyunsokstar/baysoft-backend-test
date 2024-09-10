@@ -19,7 +19,6 @@ public class TodoSearchImpl extends QuerydslRepositorySupport implements TodoSea
         super(Todo.class);  // 엔티티 클래스를 명시적으로 전달
     }
 
-
     //  pageRequestDto 는 검색과 관련된 정보를 모두 가지고 있음
     @Override
     public Page<Todo> search1(PageRequestDTO pageRequestDTO) {
@@ -29,7 +28,7 @@ public class TodoSearchImpl extends QuerydslRepositorySupport implements TodoSea
         JPQLQuery<Todo> query = from(todo);
 
         // 조건 추가
-        query.where(todo.title.contains("1"));
+//        query.where(todo.title.contains("1"));
 
         Pageable pageable = PageRequest.of(
                 pageRequestDTO.getPage() - 1,

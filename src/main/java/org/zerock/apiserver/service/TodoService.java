@@ -5,6 +5,8 @@ import org.zerock.apiserver.dto.PageRequestDTO;
 import org.zerock.apiserver.dto.PageResponseDTO;
 import org.zerock.apiserver.dto.TodoDTO;
 
+import java.util.List;
+
 public interface TodoService {
     TodoDTO get(long tno);
 
@@ -14,19 +16,21 @@ public interface TodoService {
 
     void remove(Long tno);
 
-    // 페이지 타입을 리턴 하는 getList 함수
+    // 여러 개의 Todo를 한 번에 삭제
+    void removeTodos(List<Long> tnoList);
+
+    void registerTodos(List<TodoDTO> todoDTOList); // 리스트 저장 및 업데이트
+
     PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO);
 
     default TodoDTO entityToDto(Todo todo) {
-        TodoDTO todoDto =
-                TodoDTO.builder()
-                        .tno(todo.getTno())
-                        .title(todo.getTitle())
-                        .content(todo.getContent())
-                        .complete(todo.isComplete())
-                        .dueDate(todo.getDueDate())
-                        .build();
-        return todoDto;
+        return TodoDTO.builder()
+                .tno(todo.getTno())
+                .title(todo.getTitle())
+                .content(todo.getContent())
+                .complete(todo.isComplete())
+                .dueDate(todo.getDueDate())
+                .build();
     }
 
     default Todo dtoToEntity(TodoDTO todoDto) {
@@ -38,5 +42,4 @@ public interface TodoService {
                 .dueDate(todoDto.getDueDate())
                 .build();
     }
-
 }
