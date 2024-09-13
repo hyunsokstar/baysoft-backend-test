@@ -32,7 +32,7 @@ public class TodoController {
     }
 
     @PostMapping("/")
-    public Map<String, Long> registe(@RequestBody TodoDTO dto) {
+    public Map<String, Long> register(@RequestBody TodoDTO dto) {
         log.info("todoDto : " + dto);
         Long tno = todoService.register(dto);
         return Map.of("TNO", tno);
