@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.apiserver.dto.PageRequestDTO;
 import org.zerock.apiserver.dto.PageResponseDTO;
+import org.zerock.apiserver.dto.SearchRequestDTO;
 import org.zerock.apiserver.dto.TodoDTO;
 import org.zerock.apiserver.service.TodoService;
 
@@ -25,9 +26,9 @@ public class TodoController {
     }
 
     @GetMapping("/list")
-    public PageResponseDTO<TodoDTO> list(PageRequestDTO pageRequestDTO) {
-        log.info("list......" + pageRequestDTO);
-        return todoService.getList(pageRequestDTO);
+    public PageResponseDTO<TodoDTO> list(SearchRequestDTO searchRequestDTO) {
+        log.info("searchRequestDTO......for list !" + searchRequestDTO);
+        return todoService.getList(searchRequestDTO);
     }
 
     @PostMapping("/")
@@ -64,5 +65,11 @@ public class TodoController {
     public Map<String, String> remove(@PathVariable Long tno) {
         todoService.remove(tno);
         return Map.of("RESULT", "SUCCESS");
+    }
+
+    @GetMapping("/search")
+    public PageResponseDTO<TodoDTO> search(SearchRequestDTO searchRequestDTO) {
+        log.info("search......" + searchRequestDTO);
+        return todoService.search(searchRequestDTO);
     }
 }

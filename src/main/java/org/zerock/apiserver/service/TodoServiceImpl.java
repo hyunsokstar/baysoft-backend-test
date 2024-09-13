@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.zerock.apiserver.domain.Todo;
 import org.zerock.apiserver.dto.PageRequestDTO;
 import org.zerock.apiserver.dto.PageResponseDTO;
+import org.zerock.apiserver.dto.SearchRequestDTO;
 import org.zerock.apiserver.dto.TodoDTO;
 import org.zerock.apiserver.repository.TodoRepository;
 
@@ -86,14 +87,29 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO) {
-        Page<Todo> result = todoRepository.search1(pageRequestDTO);
-        List<TodoDTO> dtoList = result.get().map(this::entityToDto).collect(Collectors.toList());
+    public PageResponseDTO<TodoDTO> getList(SearchRequestDTO searchRequestDTO) {
+        PageResponseDTO<TodoDTO> result = todoRepository.search(searchRequestDTO);
+        List<TodoDTO> dtoList = result.getDtoList();
 
         return PageResponseDTO.<TodoDTO>withAll()
                 .dtoList(dtoList)
-                .pageRequestDTO(pageRequestDTO)
-                .total(result.getTotalElements())
+                .pageRequestDTO(searchRequestDTO)
+                .total(result.getTotalCount())
                 .build();
     }
+
+    @Override
+    public PageResponseDTO<TodoDTO> search(SearchRequestDTO searchRequestDTO) {
+
+        // getCurrentPage와 getPageSize를 정의합시다.
+        PageResponseDTO<TodoDTO> result = todoRepository.search(searchRequestDTO);
+        List<TodoDTO> dtoList = result.getDtoList();
+
+        return PageResponseDTO.<TodoDTO>withAll()
+                .dtoList(dtoList)
+                .pageRequestDTO(searchRequestDTO)
+                .total(result.getTotalCount())
+                .build();
+    }
+
 }

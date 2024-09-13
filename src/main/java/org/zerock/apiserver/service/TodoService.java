@@ -3,6 +3,7 @@ package org.zerock.apiserver.service;
 import org.zerock.apiserver.domain.Todo;
 import org.zerock.apiserver.dto.PageRequestDTO;
 import org.zerock.apiserver.dto.PageResponseDTO;
+import org.zerock.apiserver.dto.SearchRequestDTO;
 import org.zerock.apiserver.dto.TodoDTO;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface TodoService {
 
     void registerTodos(List<TodoDTO> todoDTOList); // 리스트 저장 및 업데이트
 
-    PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO);
+    PageResponseDTO<TodoDTO> getList(SearchRequestDTO searchRequestDTO);
 
     default TodoDTO entityToDto(Todo todo) {
         return TodoDTO.builder()
@@ -42,4 +43,6 @@ public interface TodoService {
                 .dueDate(todoDto.getDueDate())
                 .build();
     }
+    PageResponseDTO<TodoDTO> search(SearchRequestDTO searchRequestDTO);
+
 }
