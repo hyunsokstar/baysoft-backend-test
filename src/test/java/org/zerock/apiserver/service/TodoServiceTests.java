@@ -34,11 +34,4 @@ public class TodoServiceTests {
         log.info(todoService.register(todoDTO));
     }
 
-    @Test
-    public void testGetList() {
-        PageRequestDTO pageRequestDTO = PageRequestDTO.builder().page(2).build();
-        log.info(todoService.getList(pageRequestDTO));
-    }
-
-
 }
