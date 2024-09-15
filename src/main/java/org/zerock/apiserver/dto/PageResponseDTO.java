@@ -35,7 +35,7 @@ public class PageResponseDTO<E> {
         // 블록 크기를 pageRequestDTO.getSize()로 설정
         int blockSize = pageRequestDTO.getSize();
 
-        // 총 페이지수 추정
+        // 마지막 페이지 번호
         int end = (int) (Math.ceil(pageRequestDTO.getPage() / (double) blockSize)) * blockSize;
 
         // 현재 블록의 첫 페이지 번호
