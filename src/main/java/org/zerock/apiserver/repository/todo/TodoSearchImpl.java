@@ -1,4 +1,4 @@
-package org.zerock.apiserver.repository.search;
+package org.zerock.apiserver.repository.todo;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
@@ -10,6 +10,7 @@ import org.zerock.apiserver.domain.Todo;
 import org.zerock.apiserver.dto.PageResponseDTO;
 import org.zerock.apiserver.dto.SearchRequestDTO;
 import org.zerock.apiserver.dto.TodoDTO;
+import org.zerock.apiserver.dto.mapper.TodoMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +28,6 @@ public class TodoSearchImpl extends QuerydslRepositorySupport implements TodoSea
         BooleanBuilder builder = getSearchConditions(searchRequestDTO);
         JPQLQuery<Todo> query = from(QTodo.todo).where(builder);
 
-        // pageable 객체에 대해 자세하게 설명 해줘
         Pageable pageable = getPageable(searchRequestDTO);
 
         // 페이징 적용
@@ -71,7 +71,7 @@ public class TodoSearchImpl extends QuerydslRepositorySupport implements TodoSea
 
     private List<TodoDTO> executeQueryAndConvertToDto(JPQLQuery<Todo> query) {
         return query.fetch().stream()
-                .map(this::entityToDto)
+                .map(TodoMapper::entityToDto)
                 .collect(Collectors.toList());
     }
 
@@ -83,13 +83,13 @@ public class TodoSearchImpl extends QuerydslRepositorySupport implements TodoSea
                 .build();
     }
 
-    public TodoDTO entityToDto(Todo todo) {
-        return TodoDTO.builder()
-                .tno(todo.getTno())
-                .title(todo.getTitle())
-                .content(todo.getContent())
-                .complete(todo.isComplete())
-                .dueDate(todo.getDueDate())
-                .build();
-    }
+//    public TodoDTO entityToDto(Todo todo) {
+//        return TodoDTO.builder()
+//                .tno(todo.getTno())
+//                .title(todo.getTitle())
+//                .content(todo.getContent())
+//                .complete(todo.isComplete())
+//                .dueDate(todo.getDueDate())
+//                .build();
+//    }
 }

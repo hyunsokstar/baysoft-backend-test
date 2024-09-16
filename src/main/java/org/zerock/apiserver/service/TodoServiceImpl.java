@@ -3,22 +3,15 @@ package org.zerock.apiserver.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.zerock.apiserver.domain.Todo;
-import org.zerock.apiserver.dto.PageRequestDTO;
 import org.zerock.apiserver.dto.PageResponseDTO;
 import org.zerock.apiserver.dto.SearchRequestDTO;
 import org.zerock.apiserver.dto.TodoDTO;
-import org.zerock.apiserver.repository.TodoRepository;
+import org.zerock.apiserver.repository.todo.TodoRepository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -26,6 +19,18 @@ import java.util.stream.Collectors;
 @Transactional
 public class TodoServiceImpl implements TodoService {
     private final TodoRepository todoRepository;
+
+    @Override
+    public PageResponseDTO<TodoDTO> getList(SearchRequestDTO searchRequestDTO) {
+        PageResponseDTO<TodoDTO> result = todoRepository.search(searchRequestDTO);
+        List<TodoDTO> dtoList = result.getDtoList();
+
+        return PageResponseDTO.<TodoDTO>withAll()
+                .dtoList(dtoList)
+                .pageRequestDTO(searchRequestDTO)
+                .total(result.getTotalCount())
+                .build();
+    }
 
     @Override
     public TodoDTO get(long tno) {
@@ -88,18 +93,6 @@ public class TodoServiceImpl implements TodoService {
                 register(dto);  // 없는 경우 새로 저장
             }
         }
-    }
-
-    @Override
-    public PageResponseDTO<TodoDTO> getList(SearchRequestDTO searchRequestDTO) {
-        PageResponseDTO<TodoDTO> result = todoRepository.search(searchRequestDTO);
-        List<TodoDTO> dtoList = result.getDtoList();
-
-        return PageResponseDTO.<TodoDTO>withAll()
-                .dtoList(dtoList)
-                .pageRequestDTO(searchRequestDTO)
-                .total(result.getTotalCount())
-                .build();
     }
 
     @Override

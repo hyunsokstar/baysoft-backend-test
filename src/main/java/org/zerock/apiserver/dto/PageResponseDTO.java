@@ -1,6 +1,5 @@
 package org.zerock.apiserver.dto;
 
-
 import lombok.Builder;
 import lombok.Data;
 

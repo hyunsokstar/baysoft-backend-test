@@ -7,8 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.test.annotation.Rollback;
 import org.zerock.apiserver.domain.Category;
+import org.zerock.apiserver.repository.category.CategoryRepository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +35,7 @@ public class CategoryRepositoryTest {
         // Create a category first
         Category category = categoryRepository.save(Category.builder()
                 .name("Read Test Category")
-                .regDt(LocalDateTime.now())
+                .regDt(LocalDate.now())
                 .build());
 
         // Read the category
@@ -51,12 +52,12 @@ public class CategoryRepositoryTest {
         // Create a category first
         Category category = categoryRepository.save(Category.builder()
                 .name("Update Test Category")
-                .regDt(LocalDateTime.now())
+                .regDt(LocalDate.now())
                 .build());
 
         // Update the category
         category.setName("Updated Category");
-        category.setUptDt(LocalDateTime.now());
+        category.setUptDt(LocalDate.now());
         Category updatedCategory = categoryRepository.save(category);
 
         assertThat(updatedCategory.getName()).isEqualTo("Updated Category");
@@ -71,7 +72,7 @@ public class CategoryRepositoryTest {
         // Create a category first
         Category category = categoryRepository.save(Category.builder()
                 .name("Delete Test Category")
-                .regDt(LocalDateTime.now())
+                .regDt(LocalDate.now())
                 .build());
 
         // Delete the category
@@ -91,7 +92,7 @@ public class CategoryRepositoryTest {
         for (int i = 0; i < 5; i++) {
             categoryRepository.save(Category.builder()
                     .name("List Test Category " + i)
-                    .regDt(LocalDateTime.now())
+                    .regDt(LocalDate.now())
                     .build());
         }
 

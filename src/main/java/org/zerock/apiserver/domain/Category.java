@@ -2,6 +2,8 @@ package org.zerock.apiserver.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,8 +24,8 @@ public class Category {
     private String name;
 
     @Column(name = "reg_dt", nullable = false)
-    private LocalDateTime regDt;
+    private LocalDate regDt;
 
     @Column(name = "upt_dt")
-    private LocalDateTime uptDt;
+    private LocalDate uptDt;
 }
