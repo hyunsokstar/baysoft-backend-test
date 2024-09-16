@@ -76,12 +76,19 @@ public class CategoryServiceImpl implements CategoryService {
         int createdCount = 0;
 
         for (CategoryDto dto : categoryDtoList) {
-            if (dto.getCategoryId() != null && categoryRepository.existsById(dto.getCategoryId())) {
+            Long categoryId = dto.getCategoryId();
+
+            if (categoryId == null || categoryId < 0) {
+                // ID가 null이거나 음수인 경우 새로운 카테고리 생성
+                createCategory(dto);
+                createdCount++;
+            } else if (categoryRepository.existsById(categoryId)) {
+                // 기존 카테고리 업데이트
                 updateCategory(dto);
                 updatedCount++;
             } else {
-                createCategory(dto);
-                createdCount++;
+                // 존재하지 않는 ID인 경우 처리 (필요 시 예외 처리)
+                // 예: throw new EntityNotFoundException("Category not found with ID: " + categoryId);
             }
         }
 

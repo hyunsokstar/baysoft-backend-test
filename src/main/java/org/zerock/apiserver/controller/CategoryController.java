@@ -31,7 +31,8 @@ public class CategoryController {
     }
 
     @PostMapping("/multiple")
-    public ResponseEntity<Map<String, Object>> saveOrUpdateCategories(@RequestBody List<CategoryDto> categoryDtoList) {
+    public ResponseEntity<Map<String, Object>> saveOrUpdateCategories(@RequestBody Map<String, List<CategoryDto>> request) {
+        List<CategoryDto> categoryDtoList = request.get("categories");
         log.info("Batch saveOrUpdateCategories request: {}", categoryDtoList);
         CategoryOperationResult result = categoryService.saveOrUpdateCategories(categoryDtoList);
 
@@ -43,7 +44,6 @@ public class CategoryController {
                         result.getUpdatedCount(), result.getCreatedCount())
         ));
     }
-
     @PostMapping
     public ResponseEntity<Map<String, Long>> createCategory(@RequestBody CreateCategoryDto createCategoryDto) {
         log.info("Create category request: " + createCategoryDto);
