@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.zerock.apiserver.dto.CategoryDto;
+
 import java.time.LocalDateTime;
 
 @Data
@@ -23,4 +25,6 @@ public class BoardDto {
     private Boolean allowOnlyAdminOrAuthorComments;
     private LocalDateTime regDt;
     private LocalDateTime uptDt;
+    private CategoryDto category;
+
 }

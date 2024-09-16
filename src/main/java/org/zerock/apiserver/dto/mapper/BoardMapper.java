@@ -2,6 +2,7 @@ package org.zerock.apiserver.dto.mapper;
 
 import org.zerock.apiserver.domain.Board;
 import org.zerock.apiserver.dto.board.BoardDto;
+import org.zerock.apiserver.dto.CategoryDto;
 
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ public class BoardMapper {
                 .allowOnlyAdminOrAuthorComments(b.getAllowOnlyAdminOrAuthorComments())
                 .regDt(b.getRegDt())
                 .uptDt(b.getUptDt())
+                .category(b.getCategory() != null ? CategoryMapper.entityToDto(b.getCategory()) : null)
                 .build()).orElse(null);
     }
 
@@ -37,6 +39,7 @@ public class BoardMapper {
                 .allowOnlyAdminOrAuthorComments(b.getAllowOnlyAdminOrAuthorComments())
                 .regDt(b.getRegDt())
                 .uptDt(b.getUptDt())
+                .category(b.getCategory() != null ? CategoryMapper.dtoToEntity(b.getCategory()) : null)
                 .build()).orElse(null);
     }
 }

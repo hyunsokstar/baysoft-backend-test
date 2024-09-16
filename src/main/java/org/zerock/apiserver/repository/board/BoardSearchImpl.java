@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.zerock.apiserver.domain.Board;
 import org.zerock.apiserver.domain.QBoard;
+import org.zerock.apiserver.domain.QCategory;
 import org.zerock.apiserver.dto.board.BoardDto;
 import org.zerock.apiserver.dto.PageResponseDtoMini;
 import org.zerock.apiserver.dto.SearchRequestDTO;
@@ -26,9 +27,13 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
     public PageResponseDtoMini<BoardDto> search(SearchRequestDTO searchRequestDTO) {
         BooleanBuilder builder = getSearchConditions(searchRequestDTO);
         QBoard board = QBoard.board;
+        QCategory category = QCategory.category;
 
         JPQLQuery<Board> query = from(board)
+                .leftJoin(board.category, category).fetchJoin()
                 .where(builder);
+//        JPQLQuery<Board> query = from(board)
+//                .where(builder);
 
         Pageable pageable = getPageable(searchRequestDTO);
         this.getQuerydsl().applyPagination(pageable, query);
