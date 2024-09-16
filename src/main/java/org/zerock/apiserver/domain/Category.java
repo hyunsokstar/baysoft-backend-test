@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "category")
@@ -28,4 +29,9 @@ public class Category {
 
     @Column(name = "upt_dt")
     private LocalDate uptDt;
+
+    // Board와의 1:N (One-to-Many) 관계 설정
+//    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Board> boards;  // 카테고리에 속한 게시판들
+
 }
