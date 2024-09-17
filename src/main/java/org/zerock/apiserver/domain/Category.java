@@ -31,7 +31,7 @@ public class Category {
     private LocalDate uptDt;
 
     // Board와의 1:N (One-to-Many) 관계 설정
-//    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Board> boards;  // 카테고리에 속한 게시판들
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Board> boards;  // 카테고리에 속한 게시판들
 
 }

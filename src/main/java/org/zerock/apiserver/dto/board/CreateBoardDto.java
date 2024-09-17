@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateBoardDto {
+    private Long boardId;
     private String name;
     private String description;
     private Boolean allowComments;
@@ -19,7 +21,7 @@ public class CreateBoardDto {
     private Boolean isPrivate;
     private Boolean adminOnlyWrite;
     private Boolean allowOnlyAdminOrAuthorComments;
-
-    // 카테고리 ID 추가
-    private Long categoryId;  // Board 생성 시 어떤 카테고리에 속할지 지정
+    private Long categoryId;
+    private LocalDateTime regDt;
+    private LocalDateTime uptDt;
 }

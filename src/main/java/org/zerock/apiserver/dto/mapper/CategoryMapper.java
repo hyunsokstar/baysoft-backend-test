@@ -2,7 +2,7 @@
 package org.zerock.apiserver.dto.mapper;
 
 import org.zerock.apiserver.domain.Category;
-import org.zerock.apiserver.dto.CategoryDto;
+import org.zerock.apiserver.dto.category.CategoryDto;
 
 public class CategoryMapper {
 

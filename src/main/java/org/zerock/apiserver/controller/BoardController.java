@@ -6,8 +6,11 @@ import org.springframework.web.bind.annotation.*;
 import org.zerock.apiserver.dto.PageResponseDtoMini;
 import org.zerock.apiserver.dto.SearchRequestDTO;
 import org.zerock.apiserver.dto.board.BoardDto;
+import org.zerock.apiserver.dto.board.BoardOperationResult;
 import org.zerock.apiserver.dto.board.CreateBoardDto;
 import org.zerock.apiserver.service.board.BoardService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/boards")
@@ -22,9 +25,10 @@ public class BoardController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping
-    public ResponseEntity<BoardDto> createBoard(@RequestBody CreateBoardDto createBoardDto) {
-        BoardDto createdBoard = boardService.createBoard(createBoardDto);
-        return ResponseEntity.ok(createdBoard);
+    @PostMapping("/save-or-update")
+    public ResponseEntity<BoardOperationResult> saveOrUpdateBoards(@RequestBody List<CreateBoardDto> boardDtoList) {
+        BoardOperationResult result = boardService.saveOrUpdateBoards(boardDtoList);
+        return ResponseEntity.ok(result);
     }
+
 }

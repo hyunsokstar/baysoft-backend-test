@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.zerock.apiserver.dto.CategoryDto;
+import org.zerock.apiserver.dto.category.CategoryDto;
 
 import java.time.LocalDateTime;
 

@@ -3,15 +3,12 @@ package org.zerock.apiserver.service.category;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zerock.apiserver.domain.Category;
-import org.zerock.apiserver.dto.CategoryDto;
-import org.zerock.apiserver.dto.PageRequestDTO;
+import org.zerock.apiserver.dto.category.CategoryDto;
 import org.zerock.apiserver.dto.PageResponseDTO;
 import org.zerock.apiserver.dto.SearchRequestDTO;
+import org.zerock.apiserver.dto.category.CategoryDtoMini;
 import org.zerock.apiserver.dto.category.CategoryOperationResult;
 import org.zerock.apiserver.dto.category.CreateCategoryDto;
 import org.zerock.apiserver.repository.category.CategoryRepository;
@@ -26,6 +23,33 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+
+    @Override
+    @Transactional
+    public CategoryOperationResult saveOrUpdateCategories(List<CategoryDto> categoryDtoList) {
+        int updatedCount = 0;
+        int createdCount = 0;
+
+        for (CategoryDto dto : categoryDtoList) {
+            Long categoryId = dto.getCategoryId();
+
+            if (categoryId == null || categoryId < 0) {
+                // ID가 null이거나 음수인 경우 새로운 카테고리 생성
+                createCategory(dto);
+                createdCount++;
+            } else if (categoryRepository.existsById(categoryId)) {
+                // 기존 카테고리 업데이트
+                updateCategory(dto);
+                updatedCount++;
+            } else {
+                // 존재하지 않는 ID인 경우 처리 (필요 시 예외 처리)
+                // 예: throw new EntityNotFoundException("Category not found with ID: " + categoryId);
+            }
+        }
+
+        return new CategoryOperationResult(updatedCount, createdCount);
+    }
+
 
     @Override
     public PageResponseDTO<CategoryDto> getAllCategories(SearchRequestDTO searchRequestDTO) {
@@ -68,33 +92,6 @@ public class CategoryServiceImpl implements CategoryService {
         return deletedCount;
     }
 
-
-    @Override
-    @Transactional
-    public CategoryOperationResult saveOrUpdateCategories(List<CategoryDto> categoryDtoList) {
-        int updatedCount = 0;
-        int createdCount = 0;
-
-        for (CategoryDto dto : categoryDtoList) {
-            Long categoryId = dto.getCategoryId();
-
-            if (categoryId == null || categoryId < 0) {
-                // ID가 null이거나 음수인 경우 새로운 카테고리 생성
-                createCategory(dto);
-                createdCount++;
-            } else if (categoryRepository.existsById(categoryId)) {
-                // 기존 카테고리 업데이트
-                updateCategory(dto);
-                updatedCount++;
-            } else {
-                // 존재하지 않는 ID인 경우 처리 (필요 시 예외 처리)
-                // 예: throw new EntityNotFoundException("Category not found with ID: " + categoryId);
-            }
-        }
-
-        return new CategoryOperationResult(updatedCount, createdCount);
-    }
-
     private void updateCategory(CategoryDto dto) {
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + dto.getCategoryId()));
@@ -114,6 +111,13 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category savedCategory = categoryRepository.save(category);
         log.info("New category created: {}", savedCategory);
+    }
+
+    @Override
+    public List<CategoryDtoMini> getCategoryIdAndNames() {
+        return categoryRepository.findAll().stream()
+                .map(category -> new CategoryDtoMini(category.getCategoryId(), category.getName()))
+                .collect(Collectors.toList());
     }
 
 }

@@ -2,7 +2,6 @@ package org.zerock.apiserver.dto.mapper;
 
 import org.zerock.apiserver.domain.Board;
 import org.zerock.apiserver.dto.board.BoardDto;
-import org.zerock.apiserver.dto.CategoryDto;
 
 import java.util.Optional;
 

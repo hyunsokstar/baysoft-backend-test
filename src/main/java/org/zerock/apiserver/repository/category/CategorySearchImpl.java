@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.zerock.apiserver.domain.Category;
 import org.zerock.apiserver.domain.QCategory;
-import org.zerock.apiserver.dto.CategoryDto;
+import org.zerock.apiserver.dto.category.CategoryDto;
 import org.zerock.apiserver.dto.PageResponseDTO;
 import org.zerock.apiserver.dto.SearchRequestDTO;
 import org.zerock.apiserver.dto.mapper.CategoryMapper;

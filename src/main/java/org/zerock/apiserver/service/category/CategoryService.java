@@ -1,9 +1,9 @@
 package org.zerock.apiserver.service.category;
 
-import org.zerock.apiserver.dto.CategoryDto;
-import org.zerock.apiserver.dto.PageRequestDTO;
+import org.zerock.apiserver.dto.category.CategoryDto;
 import org.zerock.apiserver.dto.PageResponseDTO;
 import org.zerock.apiserver.dto.SearchRequestDTO;
+import org.zerock.apiserver.dto.category.CategoryDtoMini;
 import org.zerock.apiserver.dto.category.CategoryOperationResult;
 import org.zerock.apiserver.dto.category.CreateCategoryDto;
 
@@ -16,5 +16,6 @@ public interface CategoryService {
     int removeCategories(List<Long> categoryIds);
     CategoryOperationResult saveOrUpdateCategories(List<CategoryDto> categoryDtoList);
 
+    List<CategoryDtoMini> getCategoryIdAndNames();
 
 }

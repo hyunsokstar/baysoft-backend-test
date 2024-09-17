@@ -1,4 +1,4 @@
-package org.zerock.apiserver.dto;
+package org.zerock.apiserver.dto.category;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -4,12 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.zerock.apiserver.dto.CategoryDto;
-import org.zerock.apiserver.dto.PageRequestDTO;
+import org.zerock.apiserver.dto.category.*;
 import org.zerock.apiserver.dto.PageResponseDTO;
 import org.zerock.apiserver.dto.SearchRequestDTO;
-import org.zerock.apiserver.dto.category.CategoryOperationResult;
-import org.zerock.apiserver.dto.category.CreateCategoryDto;
 import org.zerock.apiserver.service.category.CategoryService;
 
 import java.util.List;
@@ -22,6 +19,19 @@ import java.util.Map;
 public class CategoryController {
 
     private final CategoryService categoryService;
+
+    @GetMapping("/names")
+    public ResponseEntity<ResponseDtoForOptionsWithIdAndName<CategoryDtoMini>> getCategoryIdAndNames() {
+        log.info("Get category IDs and names request");
+        List<CategoryDtoMini> result = categoryService.getCategoryIdAndNames();
+
+        // 응답 DTO에 데이터를 담아서 반환
+        ResponseDtoForOptionsWithIdAndName<CategoryDtoMini> response = ResponseDtoForOptionsWithIdAndName.<CategoryDtoMini>builder()
+                .data(result)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping
     public ResponseEntity<PageResponseDTO<CategoryDto>> getAllCategories(SearchRequestDTO searchRequestDTO) {
@@ -44,6 +54,8 @@ public class CategoryController {
                         result.getUpdatedCount(), result.getCreatedCount())
         ));
     }
+
+
     @PostMapping
     public ResponseEntity<Map<String, Long>> createCategory(@RequestBody CreateCategoryDto createCategoryDto) {
         log.info("Create category request: " + createCategoryDto);

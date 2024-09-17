@@ -54,8 +54,8 @@ public class Board {
     private LocalDateTime uptDt;  // 수정일시
 
     // Category와의 다대일(Many-to-One) 관계 설정
-    @ManyToOne(fetch = FetchType.LAZY)  // 다대일 관계이며, 필요할 때만 가져오도록 Lazy 로딩 설정
-    @JoinColumn(name = "category_id", nullable = true)  // 외래 키(FK) 설정
-    private Category category;  // Board는 하나의 Category에 속함
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "category_id", nullable = true)
+    private Category category;
 
 }
