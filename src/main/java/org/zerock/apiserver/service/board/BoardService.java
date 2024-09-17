@@ -14,4 +14,6 @@ public interface BoardService {
 
     BoardOperationResult saveOrUpdateBoards(List<CreateBoardDto> boardDtoList);
 
+    int removeBoards(List<Long> boardIds);  // 새로 추가된 메서드
+
 }

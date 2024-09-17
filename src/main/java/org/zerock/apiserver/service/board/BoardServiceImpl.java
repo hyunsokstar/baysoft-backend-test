@@ -27,6 +27,9 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final CategoryRepository categoryRepository;
 
+    // Board 삭제 로직 추가 with id 배열
+    
+    
     @Override
     public PageResponseDtoMini<BoardDto> search(SearchRequestDTO searchRequestDTO) {
         return boardRepository.search(searchRequestDTO);
@@ -86,4 +89,20 @@ public class BoardServiceImpl implements BoardService {
                 () -> board.setCategory(null)
         );
     }
+
+    @Override
+    @Transactional
+    public int removeBoards(List<Long> boardIds) {
+        int deletedCount = 0;
+        for (Long boardId : boardIds) {
+            if (boardRepository.existsById(boardId)) {
+                boardRepository.deleteById(boardId);
+                deletedCount++;
+            } else {
+                log.warn("삭제하려는 게시판이 존재하지 않습니다: BoardId = " + boardId);
+            }
+        }
+        return deletedCount;
+    }
+
 }

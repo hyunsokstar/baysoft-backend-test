@@ -10,10 +10,11 @@ import org.zerock.apiserver.dto.category.CreateCategoryDto;
 import java.util.List;
 
 public interface CategoryService {
+
+    int removeCategories(List<Long> categoryIds);
     Long createCategory(CreateCategoryDto createCategoryDto);
     PageResponseDTO<CategoryDto> getAllCategories(SearchRequestDTO searchRequestDTO);
 
-    int removeCategories(List<Long> categoryIds);
     CategoryOperationResult saveOrUpdateCategories(List<CategoryDto> categoryDtoList);
 
     List<CategoryDtoMini> getCategoryIdAndNames();
