@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface BoardService {
     PageResponseDtoMini<BoardDto> search(SearchRequestDTO searchRequestDTO);
-//    BoardDto createBoard(CreateBoardDto createBoardDto);
+    //  BoardDto createBoard(CreateBoardDto createBoardDto);
 
     BoardOperationResult saveOrUpdateBoards(List<CreateBoardDto> boardDtoList);
 

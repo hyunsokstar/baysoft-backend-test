@@ -11,12 +11,12 @@ import org.zerock.apiserver.dto.SearchRequestDTO;
 import org.zerock.apiserver.dto.board.BoardDto;
 import org.zerock.apiserver.dto.board.BoardOperationResult;
 import org.zerock.apiserver.dto.board.CreateBoardDto;
-import org.zerock.apiserver.dto.mapper.BoardMapper;
 import org.zerock.apiserver.repository.board.BoardRepository;
 import org.zerock.apiserver.repository.category.CategoryRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -25,7 +25,7 @@ import java.util.Optional;
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
-    private final CategoryRepository categoryRepository; // 카테고리 레포지토리 추가
+    private final CategoryRepository categoryRepository;
 
     @Override
     public PageResponseDtoMini<BoardDto> search(SearchRequestDTO searchRequestDTO) {
@@ -39,19 +39,14 @@ public class BoardServiceImpl implements BoardService {
         int createdCount = 0;
 
         for (CreateBoardDto dto : boardDtoList) {
-            Long boardId = dto.getBoardId();
-
-            if (boardId == null || boardId < 0) {
+            if (dto.getBoardId() == null) {
                 createBoard(dto);
                 createdCount++;
             } else {
-                Optional<Board> existingBoard = boardRepository.findById(boardId);
-                if (existingBoard.isPresent()) {
-                    updateBoard(existingBoard.get(), dto);
-                    updatedCount++;
-                } else {
-                    log.warn("Board with ID {} does not exist.", boardId);
-                }
+                Board existingBoard = boardRepository.findById(dto.getBoardId())
+                        .orElseThrow(() -> new NoSuchElementException("Board with ID " + dto.getBoardId() + " not found"));
+                updateBoard(existingBoard, dto);
+                updatedCount++;
             }
         }
 
@@ -61,34 +56,34 @@ public class BoardServiceImpl implements BoardService {
     private void createBoard(CreateBoardDto dto) {
         Board board = new Board();
         updateBoardFromDto(board, dto);
-        board.setRegDt(LocalDateTime.now());  // 새로운 보드 생성 시 현재 시간으로 regDt 설정
+        board.setRegDt(LocalDateTime.now());
         boardRepository.save(board);
     }
 
     private void updateBoard(Board board, CreateBoardDto dto) {
         updateBoardFromDto(board, dto);
-        board.setRegDt(LocalDateTime.now());  // 보드 업데이트 시 현재 시간으로 modDt 설정
+        board.setUptDt(LocalDateTime.now());
         boardRepository.save(board);
     }
 
     private void updateBoardFromDto(Board board, CreateBoardDto dto) {
-        board.setName(dto.getName());
-        board.setDescription(dto.getDescription());
-        board.setAllowComments(dto.getAllowComments());
-        board.setCommentLevel(dto.getCommentLevel());
-        board.setAllowAttachments(dto.getAllowAttachments());
-        board.setIsActive(dto.getIsActive());
-        board.setIsPrivate(dto.getIsPrivate());
-        board.setAdminOnlyWrite(dto.getAdminOnlyWrite());
-        board.setAllowOnlyAdminOrAuthorComments(dto.getAllowOnlyAdminOrAuthorComments());
-        board.setUptDt(LocalDateTime.now());  // 업데이트 날짜를 현재 시간으로 설정
+        Optional.ofNullable(dto.getName()).ifPresent(board::setName);
+        Optional.ofNullable(dto.getDescription()).ifPresent(board::setDescription);
+        Optional.ofNullable(dto.getAllowComments()).ifPresent(board::setAllowComments);
+        Optional.ofNullable(dto.getCommentLevel()).ifPresent(board::setCommentLevel);
+        Optional.ofNullable(dto.getAllowAttachments()).ifPresent(board::setAllowAttachments);
+        Optional.ofNullable(dto.getIsActive()).ifPresent(board::setIsActive);
+        Optional.ofNullable(dto.getIsPrivate()).ifPresent(board::setIsPrivate);
+        Optional.ofNullable(dto.getAdminOnlyWrite()).ifPresent(board::setAdminOnlyWrite);
+        Optional.ofNullable(dto.getAllowOnlyAdminOrAuthorComments()).ifPresent(board::setAllowOnlyAdminOrAuthorComments);
 
-        if (dto.getCategoryId() != null) {
-            Category category = categoryRepository.findById(dto.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
-            board.setCategory(category);
-        } else {
-            board.setCategory(null);
-        }
+        Optional.ofNullable(dto.getCategoryId()).ifPresentOrElse(
+                categoryId -> {
+                    Category category = categoryRepository.findById(categoryId)
+                            .orElseThrow(() -> new NoSuchElementException("Category with ID " + categoryId + " not found"));
+                    board.setCategory(category);
+                },
+                () -> board.setCategory(null)
+        );
     }
 }
