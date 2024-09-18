@@ -8,9 +8,9 @@ import org.zerock.apiserver.domain.Post;
 import org.zerock.apiserver.domain.Board;
 import org.zerock.apiserver.dto.PageResponseDtoMini;
 import org.zerock.apiserver.dto.PostingSearchRequestDTO;
-import org.zerock.apiserver.dto.post.PostDto;
-import org.zerock.apiserver.dto.post.CreatePostDto;
-import org.zerock.apiserver.dto.post.PostOperationResult;
+import org.zerock.apiserver.dto.comment.CommentDto;
+import org.zerock.apiserver.dto.mapper.CommentMapper;
+import org.zerock.apiserver.dto.post.*;
 import org.zerock.apiserver.repository.post.PostRepository;
 import org.zerock.apiserver.repository.board.BoardRepository;
 
@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -92,5 +93,34 @@ public class PostServiceImpl implements PostService {
             }
         }
         return deletedCount;
+    }
+
+    @Override
+    @Transactional
+    public PostDetailDto getPostDetail(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NoSuchElementException("Post with ID " + postId + " not found"));
+
+        // 조회수 증가
+        post.setViewCount(post.getViewCount() + 1);
+        postRepository.save(post);
+
+        List<CommentDto> commentDtos = post.getComments().stream()
+                .filter(comment -> comment.getParentComment() == null)
+                .map(CommentMapper::entityToDto)
+                .collect(Collectors.toList());
+
+        return PostDetailDto.builder()
+                .postId(post.getPostId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .userId(post.getUserId())
+                .viewCount(post.getViewCount())
+                .regDt(post.getRegDt().atStartOfDay())
+                .uptDt(post.getUptDt() != null ? post.getUptDt().atStartOfDay() : null)
+                .boardId(post.getBoard().getBoardId())
+                .boardName(post.getBoard().getName())
+                .comments(commentDtos)
+                .build();
     }
 }

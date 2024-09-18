@@ -4,6 +4,7 @@ import org.zerock.apiserver.domain.Post;
 import org.zerock.apiserver.dto.post.PostDto;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class PostMapper {
     public static PostDto entityToDto(Post post) {
@@ -16,6 +17,11 @@ public class PostMapper {
                 .viewCount(p.getViewCount())
                 .regDt(p.getRegDt())
                 .uptDt(p.getUptDt())
+                .comments(p.getComments() != null ?
+                        p.getComments().stream()
+                                .map(CommentMapper::entityToDto)
+                                .collect(Collectors.toList())
+                        : null)
                 .build()).orElse(null);
     }
 

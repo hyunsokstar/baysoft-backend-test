@@ -17,6 +17,8 @@ import org.zerock.apiserver.dto.mapper.PostMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.zerock.apiserver.domain.QComment.comment;
+
 public class PostSearchImpl extends QuerydslRepositorySupport implements PostSearch {
 
     public PostSearchImpl() {
@@ -31,7 +33,9 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
 
         JPQLQuery<Post> query = from(post)
                 .leftJoin(post.board, board).fetchJoin()
-                .where(builder);
+                .leftJoin(post.comments, comment).fetchJoin()
+                .where(builder)
+                .distinct();
 
         Pageable pageable = getPageable(postingSearchRequestDTO);
         this.getQuerydsl().applyPagination(pageable, query);

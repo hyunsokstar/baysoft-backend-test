@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.apiserver.dto.PageResponseDtoMini;
 import org.zerock.apiserver.dto.PostingSearchRequestDTO;
+import org.zerock.apiserver.dto.post.PostDetailDto;
 import org.zerock.apiserver.dto.post.PostDto;
 import org.zerock.apiserver.dto.post.CreatePostDto;
 import org.zerock.apiserver.dto.post.PostOperationResult;
@@ -13,6 +14,7 @@ import org.zerock.apiserver.service.post.PostService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -45,4 +47,10 @@ public class PostController {
                 "MESSAGE", deletedCount + "개의 게시글이 삭제되었습니다."
         ));
     }
+
+    @GetMapping("/{postId}")
+    public PostDetailDto getPostDetail(@PathVariable Long postId) {
+        return postService.getPostDetail(postId);
+    }
+
 }

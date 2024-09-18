@@ -24,6 +24,8 @@ public class QPost extends EntityPathBase<Post> {
 
     public final QBoard board;
 
+    public final ListPath<Comment, QComment> comments = this.<Comment, QComment>createList("comments", Comment.class, QComment.class, PathInits.DIRECT2);
+
     public final StringPath content = createString("content");
 
     public final NumberPath<Long> postId = createNumber("postId", Long.class);
