@@ -44,6 +44,8 @@ public class QBoard extends EntityPathBase<Board> {
 
     public final StringPath name = createString("name");
 
+    public final ListPath<Post, QPost> posts = this.<Post, QPost>createList("posts", Post.class, QPost.class, PathInits.DIRECT2);
+
     public final DateTimePath<java.time.LocalDateTime> regDt = createDateTime("regDt", java.time.LocalDateTime.class);
 
     public final DateTimePath<java.time.LocalDateTime> uptDt = createDateTime("uptDt", java.time.LocalDateTime.class);

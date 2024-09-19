@@ -1,6 +1,7 @@
 package org.zerock.apiserver.repository.board;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
@@ -34,8 +35,8 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
         JPQLQuery<Board> query = from(board)
                 .leftJoin(board.category, category).fetchJoin()
                 .where(builder);
-//        JPQLQuery<Board> query = from(board)
-//                .where(builder);
+        //  JPQLQuery<Board> query = from(board)
+        //  .where(builder);
 
         Pageable pageable = getPageable(searchRequestDTO);
         this.getQuerydsl().applyPagination(pageable, query);
@@ -67,7 +68,8 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
                     builder.and(board.name.contains(keyword));
                     break;
                 case "category":
-                    builder.and(board.category.name.contains(keyword));
+                    String keywordNoSpaces = keyword.replace(" ", "");
+                    builder.and(Expressions.stringTemplate("replace({0}, ' ', '')", board.category.name).contains(keywordNoSpaces));
                     break;
                 default:
                     builder.and(board.name.contains(keyword).or(board.description.contains(keyword)));

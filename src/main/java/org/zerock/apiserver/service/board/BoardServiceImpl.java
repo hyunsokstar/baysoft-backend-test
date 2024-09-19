@@ -43,6 +43,8 @@ public class BoardServiceImpl implements BoardService {
         int updatedCount = 0;
         int createdCount = 0;
 
+            log.info("boardDtoList to 저장 or 수정: "+ boardDtoList);
+
         for (CreateBoardDto dto : boardDtoList) {
             if (dto.getBoardId() == null) {
                 createBoard(dto);

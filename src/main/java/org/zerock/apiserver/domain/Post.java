@@ -23,7 +23,7 @@ public class Post {
     @Column(name = "post_id")
     private Long postId;  // 게시글 ID (자동 생성)
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;  // 게시판 참조 (N:1 관계)
 
