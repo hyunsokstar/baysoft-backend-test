@@ -9,6 +9,7 @@ import org.zerock.apiserver.domain.Category;
 import org.zerock.apiserver.dto.PageResponseDtoMini;
 import org.zerock.apiserver.dto.SearchRequestDTO;
 import org.zerock.apiserver.dto.board.BoardDto;
+import org.zerock.apiserver.dto.board.BoardDtoMini;
 import org.zerock.apiserver.dto.board.BoardOperationResult;
 import org.zerock.apiserver.dto.board.CreateBoardDto;
 import org.zerock.apiserver.repository.board.BoardRepository;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -103,6 +105,13 @@ public class BoardServiceImpl implements BoardService {
             }
         }
         return deletedCount;
+    }
+
+    @Override
+    public List<BoardDtoMini> getBoardIdAndNames() {
+        return boardRepository.findAll().stream()
+                .map(board -> new BoardDtoMini(board.getBoardId(), board.getName()))
+                .collect(Collectors.toList());
     }
 
 }

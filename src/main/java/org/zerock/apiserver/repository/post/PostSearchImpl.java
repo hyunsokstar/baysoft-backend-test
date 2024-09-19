@@ -2,6 +2,7 @@ package org.zerock.apiserver.repository.post;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static org.zerock.apiserver.domain.QComment.comment;
 
+@Log4j2
 public class PostSearchImpl extends QuerydslRepositorySupport implements PostSearch {
 
     public PostSearchImpl() {
@@ -58,6 +60,9 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
         QPost post = QPost.post;
 
         String keyword = postingSearchRequestDTO.getSearchKeyword();
+
+        log.info("키워드 체크 : "+ keyword);
+
         if (keyword != null && !keyword.isEmpty()) {
             switch (postingSearchRequestDTO.getSearchType()) {
                 case "title":

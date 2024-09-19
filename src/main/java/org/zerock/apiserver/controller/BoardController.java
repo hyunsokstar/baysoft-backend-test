@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.zerock.apiserver.dto.PageResponseDtoMini;
 import org.zerock.apiserver.dto.SearchRequestDTO;
 import org.zerock.apiserver.dto.board.BoardDto;
+import org.zerock.apiserver.dto.board.BoardDtoMini;
 import org.zerock.apiserver.dto.board.BoardOperationResult;
 import org.zerock.apiserver.dto.board.CreateBoardDto;
 import org.zerock.apiserver.service.board.BoardService;
@@ -44,6 +45,13 @@ public class BoardController {
                 "DELETED_COUNT", deletedCount,
                 "MESSAGE", deletedCount + "개의 게시판이 삭제되었습니다."
         ));
+    }
+
+    @GetMapping("/names")
+    public ResponseEntity<List<BoardDtoMini>> getBoardIdAndNames() {
+        log.info("Get board IDs and names request");
+        List<BoardDtoMini> result = boardService.getBoardIdAndNames();
+        return ResponseEntity.ok(result);
     }
 
 }

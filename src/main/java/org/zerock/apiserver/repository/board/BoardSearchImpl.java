@@ -2,6 +2,7 @@ package org.zerock.apiserver.repository.board;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,6 +18,7 @@ import org.zerock.apiserver.dto.mapper.BoardMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Log4j2
 public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardSearch {
 
     public BoardSearchImpl() {
@@ -56,13 +58,16 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
         QBoard board = QBoard.board;
 
         String keyword = searchRequestDTO.getSearchKeyword();
+        log.info("keyword check: "+ searchRequestDTO.getSearchType());
+        log.info("keyword check: "+ keyword);
+
         if (keyword != null && !keyword.isEmpty()) {
             switch (searchRequestDTO.getSearchType()) {
                 case "name":
                     builder.and(board.name.contains(keyword));
                     break;
-                case "description":
-                    builder.and(board.description.contains(keyword));
+                case "category":
+                    builder.and(board.category.name.contains(keyword));
                     break;
                 default:
                     builder.and(board.name.contains(keyword).or(board.description.contains(keyword)));
