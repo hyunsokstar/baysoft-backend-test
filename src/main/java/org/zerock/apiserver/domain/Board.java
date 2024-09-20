@@ -55,9 +55,6 @@ public class Board {
     @Column(name = "upt_dt")
     private LocalDateTime uptDt;  // 수정일시
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
-
     // Category와의 다대일(Many-to-One) 관계 설정
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = true)
