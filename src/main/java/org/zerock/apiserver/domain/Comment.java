@@ -46,6 +46,13 @@ public class Comment {
     @Column(name = "upt_dt")
     private LocalDateTime uptDt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id", nullable = false)
+    private Board board;
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<File> files = new ArrayList<>();
+
     @PrePersist
     public void prePersist() {
         this.regDt = LocalDateTime.now();

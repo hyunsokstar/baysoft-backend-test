@@ -36,6 +36,8 @@ public class QBoard extends EntityPathBase<Board> {
 
     public final NumberPath<Integer> commentLevel = createNumber("commentLevel", Integer.class);
 
+    public final ListPath<Comment, QComment> comments = this.<Comment, QComment>createList("comments", Comment.class, QComment.class, PathInits.DIRECT2);
+
     public final StringPath description = createString("description");
 
     public final BooleanPath isActive = createBoolean("isActive");
