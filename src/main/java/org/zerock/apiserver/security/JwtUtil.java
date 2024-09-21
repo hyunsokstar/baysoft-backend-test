@@ -1,5 +1,6 @@
 package org.zerock.apiserver.security;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -14,21 +15,33 @@ public class JwtUtil {
 
     private final Key key;
 
+    @Value("${jwt.expiration.access}")
+    private long accessTokenExpiration;
+
+    @Value("${jwt.expiration.refresh}")
+    private long refreshTokenExpiration;
+
     public JwtUtil(@Value("${jwt.secret}") String secret) {
-        // 보안에 안전한 키 생성
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
 
-    public String generateToken(String username) {
+    public String generateAccessToken(String username) {
+        return generateToken(username, accessTokenExpiration);
+    }
+
+    public String generateRefreshToken(String username) {
+        return generateToken(username, refreshTokenExpiration);
+    }
+
+    private String generateToken(String username, long expiration) {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10시간
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key)
                 .compact();
     }
 
-    // 토큰 검증 메소드 (필요한 경우)
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -36,5 +49,14 @@ public class JwtUtil {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public String getUsernameFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject();
     }
 }
