@@ -1,75 +1,101 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.2'
-	id 'io.spring.dependency-management' version '1.1.6'
+    id 'java'
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.6'
 }
 
 group = 'org.zerock'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-	all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'mysql:mysql-connector-java:8.0.33'
 
-	// Lombok 의존성
-	compileOnly 'org.projectlombok:lombok'
-	testCompileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testAnnotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	// Querydsl 관련 의존성
-	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
-	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	// MariaDB JDBC 드라이버
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    // Lombok 의존성
+    compileOnly 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
-	// Spring Boot Test 의존성
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // Querydsl 관련 의존성
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
-	// Log4j2 의존성
-	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    // MariaDB JDBC 드라이버
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+    // Spring Boot Test 의존성
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Log4j2 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+
+    // Spring Security를 사용하여 인증 및 인가 기능을 제공하는 스타터 패키지
+    // JWT 기반 인증을 처리할 때도 Spring Security가 필요함
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // Spring MVC 및 REST API 개발을 위한 기본 웹 스타터 패키지
+    // 웹 애플리케이션에서 JWT 인증을 위한 API를 제공하는 데 필요
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // JWT 생성, 파싱, 서명, 검증과 같은 JWT 관련 기능을 제공하는 API
+    // 애플리케이션에서 JWT를 다루기 위해 기본적으로 필요한 라이브러리
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+
+    // JWT API의 구현체로, JWT 생성과 검증의 실제 로직을 처리
+    // API가 정의된 대로 JWT를 다루는 기능을 제공하는 구현체
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+
+    // Jackson을 사용해 JWT의 페이로드를 JSON 형식으로 직렬화/역직렬화하는 데 사용
+    // JWT 페이로드가 JSON 형식일 때 필요한 라이브러리
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 }
 
 def querydslDir = "src/main/generated"
 
 sourceSets {
-	main.java.srcDirs += [ querydslDir ]
-	test {
-		java.srcDirs = ['src/test/java']
-	}
+    main.java.srcDirs += [querydslDir]
+    test {
+        java.srcDirs = ['src/test/java']
+    }
 }
 
 tasks.withType(JavaCompile) {
-	options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
 }
 
 clean {
-	delete file(querydslDir)
+    delete file(querydslDir)
 }
 
 test {
-	useJUnitPlatform()
-	testLogging {
-		events "passed", "skipped", "failed"
-	}
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
