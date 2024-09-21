@@ -27,6 +27,9 @@ public class PostController {
     @GetMapping("/search")
     public ResponseEntity<PageResponseDtoMini<PostDto>> searchPosts(PostingSearchRequestDTO postingSearchRequestDTO) {
         PageResponseDtoMini<PostDto> result = postService.search(postingSearchRequestDTO);
+
+        log.info("post list 요청 check !");
+
         return ResponseEntity.ok(result);
     }
 
