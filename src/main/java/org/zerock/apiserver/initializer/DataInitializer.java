@@ -139,7 +139,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private List<Post> createPosts(List<Board> boards, List<User> users) {
         List<Post> posts = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 25; i++) {  // Changed from 10 to 25
             Post post = Post.builder()
                     .title("Post " + i)
                     .content("Content for Post " + i)
