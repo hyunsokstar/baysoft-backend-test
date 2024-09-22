@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.zerock.apiserver.domain.auth.User;
-import org.zerock.apiserver.repository.UserRepository;
+import org.zerock.apiserver.repository.user.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

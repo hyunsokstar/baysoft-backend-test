@@ -1,13 +1,13 @@
 package org.zerock.apiserver.dto.auth;
 
-public class TokenResponse {
+public class LoginResponse {
     private String accessToken;
     private String refreshToken;
     private UserDTO user;
 
-    public TokenResponse() {}
+    public LoginResponse() {}
 
-    public TokenResponse(String accessToken, String refreshToken, UserDTO user) {
+    public LoginResponse(String accessToken, String refreshToken, UserDTO user) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.user = user;

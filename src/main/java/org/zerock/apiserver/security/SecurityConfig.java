@@ -2,6 +2,7 @@ package org.zerock.apiserver.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,31 +25,26 @@ public class SecurityConfig {
         this.jwtUtil = jwtUtil;
     }
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-//        http
-//                .csrf(csrf -> csrf.disable())
-//                .authorizeHttpRequests(authz -> authz
-//                        .requestMatchers("/api/auth/**").permitAll()
-//                        .anyRequest().authenticated()
-//                )
-//                .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtUtil))
-//                .addFilterBefore(new JwtAuthorizationFilter(jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class)
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//        return http.build();
-//    }
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
-                        .anyRequest().permitAll() // 모든 요청 허용
+                        .requestMatchers(HttpMethod.GET).permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/teacher/**").hasAnyRole("ADMIN", "TEACHER")
+                        .requestMatchers("/api/student/**").hasAnyRole("ADMIN", "TEACHER", "STUDENT")
+                        .requestMatchers("/api/user/**").hasAnyRole("ADMIN", "TEACHER", "STUDENT", "USER")
+                        .requestMatchers("/api/guest/**").hasAnyRole("ADMIN", "TEACHER", "STUDENT", "USER", "GUEST")
+                        .anyRequest().authenticated()
                 )
-                .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtUtil))
                 .addFilterBefore(new JwtAuthorizationFilter(jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
         return http.build();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

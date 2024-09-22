@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 import org.zerock.apiserver.domain.*;
 import org.zerock.apiserver.domain.auth.Role;
 import org.zerock.apiserver.domain.auth.User;
-import org.zerock.apiserver.repository.*;
 import org.zerock.apiserver.repository.board.BoardRepository;
 import org.zerock.apiserver.repository.category.CategoryRepository;
 import org.zerock.apiserver.repository.comment.CommentRepository;
 import org.zerock.apiserver.repository.file.FileRepository;
 import org.zerock.apiserver.repository.post.PostRepository;
 import org.zerock.apiserver.repository.role.RoleRepository;
+import org.zerock.apiserver.repository.user.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

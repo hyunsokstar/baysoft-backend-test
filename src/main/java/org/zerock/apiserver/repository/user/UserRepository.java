@@ -1,4 +1,4 @@
-package org.zerock.apiserver.repository;
+package org.zerock.apiserver.repository.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.zerock.apiserver.domain.auth.User;
