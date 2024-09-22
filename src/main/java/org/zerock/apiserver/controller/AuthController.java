@@ -5,7 +5,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.apiserver.dto.auth.RefreshTokenRequest;
 import org.zerock.apiserver.dto.auth.TokenResponse;
+import org.zerock.apiserver.dto.auth.UserInfoResponse;
+import org.zerock.apiserver.security.CustomUserDetails;
 import org.zerock.apiserver.security.JwtUtil;
+import org.zerock.apiserver.domain.auth.User;
+
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -19,7 +24,20 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
-        return ResponseEntity.ok(authentication.getName());
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            User user = userDetails.getUser();
+
+            UserInfoResponse response = new UserInfoResponse();
+            response.setId(user.getId());
+            response.setUsername(user.getUsername());
+            response.setRoles(user.getRoles().stream()
+                    .map(role -> role.getName())
+                    .collect(Collectors.toSet()));
+
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.badRequest().body("User not authenticated");
     }
 
     @PostMapping("/refresh")

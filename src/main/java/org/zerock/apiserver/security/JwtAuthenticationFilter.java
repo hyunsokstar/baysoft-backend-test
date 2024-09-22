@@ -15,6 +15,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.zerock.apiserver.dto.auth.LoginRequest;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -49,8 +51,20 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String accessToken = jwtUtil.generateAccessToken(userDetails.getUsername());
         String refreshToken = jwtUtil.generateRefreshToken(userDetails.getUsername());
 
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//        response.getWriter().write(String.format("{\"accessToken\":\"%s\",\"refreshToken\":\"%s\"}", accessToken, refreshToken));
+        // 토큰을 Map으로 생성하여 자동으로 JSON 변환
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshToken);
+
+        // 응답 형식 설정
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(String.format("{\"accessToken\":\"%s\",\"refreshToken\":\"%s\"}", accessToken, refreshToken));
+
+        // ObjectMapper를 사용하여 Map을 JSON으로 직렬화
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(response.getWriter(), tokens);
     }
 }
