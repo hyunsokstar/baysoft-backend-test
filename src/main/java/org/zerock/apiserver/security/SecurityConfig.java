@@ -30,7 +30,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers(HttpMethod.GET, "/public/**").permitAll() // 공개 경로만 GET 요청 허용
+                        .requestMatchers(HttpMethod.GET, "/**").permitAll() // 공개 경로만 GET 요청 허용
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN") // /api/admin/**는 ADMIN만 접근 가능 , ROLE_ 이 붙은값이어도 내부적으로 처리해서 비교
                         .requestMatchers("/api/teacher/**").hasAnyRole("ADMIN", "TEACHER")
